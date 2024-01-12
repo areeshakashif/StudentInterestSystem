@@ -1,0 +1,118 @@
+﻿@model MVC.Models.Student
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Interest System</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Your existing styles */
+
+        .student-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            width: 300px; /* Adjust the width as needed */
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 15px;
+            background-color: #3498db; /* Match with heading bar color */
+            color: #fff; /* Text color for the header */
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+        }
+
+            .card-header h3 {
+                margin: 0;
+            }
+
+        .student-info p {
+            margin: 5px 0;
+        }
+
+        .student-info strong {
+            color: #3498db; /* Adjust color for strong text */
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .action-buttons {
+            margin-top: 10px;
+        }
+
+            .action-buttons a {
+                display: inline-block;
+                padding: 5px 10px;
+                margin-right: 5px;
+                background-color: #3498db;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 3px;
+            }
+
+        .heading-bar {
+            background-color: #3498db;
+            text-align: center;
+            padding: 12px 0;
+            width: 100%;
+            color: white;
+            margin-bottom: 15px;
+        }
+    </style>
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <!-- Heading Bar -->
+    <div class="heading-bar">
+        <h1>Student Interests System</h1>
+    </div>
+    <div class="container">
+    <!-- Student Card Section -->
+    <div class="student-card">
+        <div class="card-header">
+            <h3>Student Information</h3>
+        </div>
+        <div class="card-body">
+           
+            <div class="student-info">
+                <p><strong>ID:</strong> @ViewBag.info.Id</p>
+                <p><strong>Name:</strong> @ViewBag.info.Name</p>
+                <p><strong>Roll Number:</strong> @ViewBag.info.RollNumber</p>
+                <p><strong>Email:</strong> @ViewBag.info.Email</p>
+                <p><strong>Date of Birth:</strong> @ViewBag.info.DOB</p>
+                <p><strong>Gender:</strong> @ViewBag.info.Gender</p>
+                <p><strong>City:</strong> @ViewBag.info.City</p>
+                <p><strong>Interest:</strong> @ViewBag.info.Interest</p>
+                <p><strong>Department:</strong> @ViewBag.info.Department</p>
+                <p><strong>Degree Title:</strong> @ViewBag.info.DegreeTitle</p>
+                <p><strong>Subject:</strong> @ViewBag.info.Subject</p>
+                <p><strong>Start Date:</strong> @ViewBag.info.StartDate.ToShortDateString()</p>
+                <p><strong>End Date:</strong> @ViewBag.info.EndDate.ToShortDateString()</p>
+            </div>
+            
+        </div>
+    </div>
+    </div>
+    <!-- JavaScript -->
+    <script>
+        // Your JavaScript code here
+    </script>
+</body>
+</html>

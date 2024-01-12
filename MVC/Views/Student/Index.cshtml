@@ -1,0 +1,227 @@
+﻿@model MVC.Models.Student
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Interest System</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Your existing styles */
+
+        #page-navigator {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+            #page-navigator select,
+            #page-navigator button {
+                padding: 10px;
+                margin-right: 10px;
+                background-color: #3498db; /* Match with heading bar color */
+                color: #fff; /* Text color for buttons */
+                border: none;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .heading-bar {
+            background-color: #3498db;
+            text-align: center;
+            padding: 18px 0;
+            width: 100%;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .sort-arrow {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+            .pagination button {
+                background-color: #3498db;
+                color: #fff;
+                border: none;
+                padding: 10px;
+                margin: 0 5px;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+                .pagination button.active {
+                    background-color: #2980b9;
+                }
+
+        td.action-column {
+            background-color: #2980b9; /* Set your desired background color */
+            color: #fff;
+        }
+    </style>
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <!-- Heading Bar -->
+    <div class="heading-bar">
+        <h1>Student Interests System</h1>
+    </div>
+
+    <!-- Page size and pagination buttons -->
+    <div id="page-navigator">
+        <label for="page-size">Page Size:</label>
+        <select id="page-size">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+        </select>
+
+        <button id="first-page">&lt;&lt; First</button>
+        <button id="prev-page">&lt; Prev</button>
+        <button id="next-page">Next &gt;</button>
+        <button id="last-page">Last &gt;&gt;</button>
+    </div>
+
+    <!-- Table -->
+    <table id="data-table" class="display">
+        <!-- Table header and body -->
+        <table id="data-table" class="display">
+            <thead>
+                <tr>
+                    <th style ="width: 2%;">ID<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">Name<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">Roll Number<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">Department<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">DOB <span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">Gender<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">City<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">Interest<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">Degree Title<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 2%;">StartDate<span class="sort-arrow" data-col="name"></span></th>
+                    <th style="width: 10%;">Actions<span class="sort-arrow" data-col="name"></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Add 25 rows of dummy data -->
+                <!-- ... -->
+                <tr>
+            <tbody id="studentTable">
+                        @foreach (var s in ViewBag.StudentData)
+                        {
+                    <tr>
+                        <th>@s.Id</th>
+                        <th>@s.Name</th>
+                        <th>@s.RollNumber</th>
+                        <th>@s.Department</th>
+                        <th>@s.DOB</th>
+                        <th>@s.Gender</th>
+                        <th>@s.City</th>
+                        <th>@s.Interest</th>                    
+                        <th>@s.DegreeTitle</th>
+                        <th>@s.StartDate</th>
+                        <td class="action-column">
+                            <a class="view-link" style="color: #fff;" asp-action="StudentView" asp-route-id="@s.Id">View</a> |
+                            <a class="edit-link" style="color: #fff;" asp-action="Edit" asp-route-id="@s.Id">Edit</a> |
+                            <a class="delete-link" style="color: #fff;" asp-action="Delete" asp-route-id="@s.Id">Delete</a>
+                        </td>
+                    </tr>
+                        }
+                <!-- Repeat rows for each student -->
+            </tbody>
+            </tr>
+            <!-- ... -->
+            </tbody>
+        </table>
+    </table>
+
+    <!-- JavaScript -->
+    <script>
+        $(document).ready(function () {
+            var table = $('#data-table').DataTable({
+                // Your DataTables configurations go here
+            });
+
+            // Handle page size change
+            $('#page-size').on('change', function () {
+                table.page.len($(this).val()).draw();
+            });
+
+            // Handle pagination actions
+            $('#first-page').on('click', function () {
+                table.page('first').draw('page');
+            });
+
+            $('#prev-page').on('click', function () {
+                table.page('previous').draw('page');
+            });
+
+            $('#next-page').on('click', function () {
+                table.page('next').draw('page');
+            });
+
+            $('#last-page').on('click', function () {
+                table.page('last').draw('page');
+            });
+
+            // Handle column sorting
+            $('.sort-arrow').on('click', function () {
+                var column = $(this).data('col');
+                var order = table.order()[0][1] === 'asc' ? 'desc' : 'asc';
+                table.order([column, order]).draw();
+            });
+
+            // Update page information
+            table.on('draw', function () {
+                $('#current-page').text(table.page.info().page + 1);
+                $('#total-pages').text(table.page.info().pages);
+            });
+
+            // Dynamically generate pagination buttons
+            var paginationContainer = $('.pagination');
+            for (var i = 1; i <= table.page.info().pages; i++) {
+                paginationContainer.append('<button class="page-btn" data-page="' + i + '">' + i + '</button>');
+            }
+
+            // Handle pagination button click
+            paginationContainer.on('click', '.page-btn', function () {
+                var page = $(this).data('page') - 1;
+                table.page(page).draw('page');
+            });
+        });
+    </script>
+</body>
+</html>

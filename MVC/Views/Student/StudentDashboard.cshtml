@@ -1,0 +1,914 @@
+﻿@model MVC.Models.Student
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students Interest System</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .status-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 17px;
+        }
+
+        .status-card {
+            width: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .status-section1 {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 17px;
+        }
+
+        .status-card1 {
+            width: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+            .status-card1 h2 {
+                font-size: 16px;
+                margin-bottom: 10px;
+                background-color: #3498db;
+                color: white;
+                padding: 4px;
+            }
+            .status-card h2 {
+                font-size: 16px;
+                margin-bottom: 10px;
+                background-color: #3498db;
+                color: white;
+                padding: 4px;
+            }
+
+        .status-details {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .status-item {
+            background-color: #3498db;
+            color: white;
+            padding: 4px;
+            margin-bottom: 4px;
+        }
+
+            .status-item:nth-child(even) {
+                background-color: #2980b9;
+            }
+
+            .status-item span {
+                display: inline-block;
+                width: 70px;
+            }
+
+        .interests-section {
+            display: flex;
+            justify-content: normal;
+            margin-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .interests {
+            width: 42%; /* Adjust width as needed */
+            border: 1px solid #ccc;
+            padding: 8px;
+            box-sizing: border-box; /* Include padding and border in width */
+        }
+
+            .interests h2 {
+                font-size: 20px;
+                margin-bottom: 10px;
+                background-color: #3498db;
+                color: white;
+                padding: 5px;
+                text-align: center;
+            }
+
+            .interests ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+                .interests ul li {
+                    margin-bottom: 5px;
+                    margin-right: 5px;
+                }
+
+        .interest-button {
+            padding: 8px 8px; /* Adjust padding for smaller buttons */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px; /* Adjust font size for smaller buttons */
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        /* Additional style for distinct interests */
+        .distinct-interests {
+            display: flex;
+            gap: 12px;
+        }
+
+            .distinct-interests span {
+                background-color: #3498db;
+                color: white;
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+
+        /* Heading Bar */
+        .heading-bar {
+            background-color: #3498db;
+            text-align: center;
+            padding: 19px 0;
+            width: 100%;
+            color: white;
+            margin-bottom: 22px;
+        }
+
+        h4 {
+            margin-bottom: 10px; /* Adding margin between the h4 and the following elements */
+            font-size: 19px; /* Adjust font size to accommodate longer text */
+        }
+        .chart-row {
+            display: flex;
+            gap: 20px; /* Gap between charts */
+        }
+
+        .chart-row1 {
+            display: flex;
+            gap: 20px; /* Gap between charts */
+        }
+
+        .chart-container {
+            width: 30%; /* Width of each chart */
+            height: 250px; /* Height of each chart */
+            box-sizing: border-box; /* Include padding and border in width */
+            border: 1px solid #ccc; /* Add a border for clarity */
+        }
+    </style>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+
+</head>
+<body>
+    <!-- Heading Bar -->
+    <div class="heading-bar">
+        <h1>Student Interests System</h1>
+    </div>
+    <!-- Chart -->
+    <h4>
+        Age Distribution&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Departmental Distribution
+        &nbsp;&nbsp;&nbsp;&nbsp;Degree Distribution&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gender Distribution&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Provincial Distribution
+    </h4>
+    <div class="chart-row">
+        <div class="chart-container" id="chartdiv"></div>
+        <script>
+            am5.ready(function () {
+
+                // Create root element
+                // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                var root = am5.Root.new("chartdiv");
+
+                // Set themes
+                // https://www.amcharts.com/docs/v5/concepts/themes/
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+                // Create chart
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/
+                var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                    panX: true,
+                    panY: true,
+                    wheelX: "panX",
+                    wheelY: "zoomX",
+                    pinchZoomX: true,
+                    paddingLeft: 0,
+                    paddingRight: 1
+                }));
+
+                // Add cursor
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+                var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+                cursor.lineY.set("visible", false);
+
+
+                // Create axes
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+                var xRenderer = am5xy.AxisRendererX.new(root, {
+                    minGridDistance: 30,
+                    minorGridEnabled: true
+                });
+
+                xRenderer.labels.template.setAll({
+                    rotation: -90,
+                    centerY: am5.p50,
+                    centerX: am5.p100,
+                    paddingRight: 15
+                });
+
+                xRenderer.grid.template.setAll({
+                    location: 1
+                })
+
+                var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                    maxDeviation: 0.3,
+                    categoryField: "country",
+                    renderer: xRenderer,
+                    tooltip: am5.Tooltip.new(root, {})
+                }));
+
+                var yRenderer = am5xy.AxisRendererY.new(root, {
+                    strokeOpacity: 0.1
+                })
+
+                var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                    maxDeviation: 0.3,
+                    renderer: yRenderer
+                }));
+
+                // Create series
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+                var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                    name: "Series 1",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "value",
+                    sequencedInterpolation: true,
+                    categoryXField: "country",
+                    tooltip: am5.Tooltip.new(root, {
+                        labelText: "{valueY}"
+                    })
+                }));
+
+                series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0 });
+                series.columns.template.adapters.add("fill", function (fill, target) {
+                    return chart.get("colors").getIndex(series.columns.indexOf(target));
+                });
+
+                series.columns.template.adapters.add("stroke", function (stroke, target) {
+                    return chart.get("colors").getIndex(series.columns.indexOf(target));
+                });
+
+                var ageData = @Html.Raw(Json.Serialize(ViewBag.e1));
+
+                // Convert age distribution data to array of objects for chart input
+                var data1 = Object.keys(ageData).map(function (age) {
+                    return { country: age.toString(), value: ageData[age] };
+                });
+
+                // Set data to the chart series
+                xAxis.data.setAll(data1);
+                series.data.setAll(data1);
+                
+
+                // Make stuff animate on load
+                // https://www.amcharts.com/docs/v5/concepts/animations/
+                series.appear(1000);
+                chart.appear(1000, 100);
+
+            }); // end am5.ready()
+        </script>
+        <!-- HTML -->
+        <div class="chart-container" id="chartdiv1"></div>
+        <script>
+            am5.ready(function () {
+
+                // Create root element
+                // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                var root = am5.Root.new("chartdiv1");
+
+                // Set themes
+                // https://www.amcharts.com/docs/v5/concepts/themes/
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+                // Create chart
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+                var chart = root.container.children.push(
+                    am5percent.PieChart.new(root, {
+                        endAngle: 270
+                    })
+                );
+
+                // Create series
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+                var series = chart.series.push(
+                    am5percent.PieSeries.new(root, {
+                        valueField: "value",
+                        categoryField: "category",
+                        endAngle: 270
+                    })
+                );
+
+                series.states.create("hidden", {
+                    endAngle: -90
+                });
+                console.log(@Html.Raw(Json.Serialize(ViewBag.b)));
+                var a = @Html.Raw(Json.Serialize(ViewBag.b));
+                const formattedData = a.map(obj => {
+                    const category = Object.keys(obj)[0]; // Extract the department name
+                    const value = obj[category]; // Extract the corresponding numeric value
+
+                    return {
+                        category: category,
+                        value: value
+                    };
+                });
+                // Set data
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+                series.data.setAll(formattedData);
+                
+                console.log(formattedData);
+                series.appear(1000, 100);
+
+            }); // end am5.ready()
+        </script>
+        <div class="chart-container" id="chartdiv2"></div>
+        <script>
+            am5.ready(function () {
+
+                // Create root element
+                // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                var root = am5.Root.new("chartdiv2");
+
+                // Set themes
+                // https://www.amcharts.com/docs/v5/concepts/themes/
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+                // Create chart
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+                var chart = root.container.children.push(
+                    am5percent.PieChart.new(root, {
+                        endAngle: 270
+                    })
+                );
+
+                // Create series
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+                var series = chart.series.push(
+                    am5percent.PieSeries.new(root, {
+                        valueField: "value",
+                        categoryField: "category",
+                        endAngle: 270
+                    })
+                );
+                
+                series.states.create("hidden", {
+                    endAngle: -90
+                });
+                console.log(@Html.Raw(Json.Serialize(ViewBag.b1)))
+                var a1 = @Html.Raw(Json.Serialize(ViewBag.b1));
+                const formattedData1 = a1.map(obj => {
+                    const category = Object.keys(obj)[0]; // Extract the department name
+                    const value = obj[category]; // Extract the corresponding numeric value
+
+                    return {
+                        category: category,
+                        value: value
+                    };
+                });
+                // Set data
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+                
+                series.data.setAll(formattedData1);
+                series.appear(1000, 100);
+
+            }); // end am5.ready()
+        </script>
+        <div class ="chart-container" id="chartdiv3"></div>
+        <script>
+            am5.ready(function () {
+
+                // Create root element
+                // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                var root = am5.Root.new("chartdiv3");
+
+                // Set themes
+                // https://www.amcharts.com/docs/v5/concepts/themes/
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+                // Create chart
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+                var chart = root.container.children.push(
+                    am5percent.PieChart.new(root, {
+                        endAngle: 270
+                    })
+                );
+
+                // Create series
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+                var series = chart.series.push(
+                    am5percent.PieSeries.new(root, {
+                        valueField: "value",
+                        categoryField: "category",
+                        endAngle: 270
+                    })
+                );
+
+                series.states.create("hidden", {
+                    endAngle: -90
+                });
+                var a2 = @Html.Raw(Json.Serialize(ViewBag.b2));
+                const formattedData2 = a2.map(obj => {
+                    const category = Object.keys(obj)[0]; // Extract the department name
+                    const value = obj[category]; // Extract the corresponding numeric value
+
+                    return {
+                        category: category,
+                        value: value
+                    };
+                });
+                // Set data
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+
+                series.data.setAll(formattedData2);
+
+                series.appear(1000, 100);
+
+            }); // end am5.ready()
+        </script>
+        <div class="chart-container" id="chartdiv4"></div>
+        <script>
+            am5.ready(function () {
+
+                // Create root element
+                // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                var root = am5.Root.new("chartdiv4");
+
+                // Set themes
+                // https://www.amcharts.com/docs/v5/concepts/themes/
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+                // Create chart
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+                var chart = root.container.children.push(
+                    am5percent.PieChart.new(root, {
+                        endAngle: 270
+                    })
+                );
+
+                // Create series
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+                var series = chart.series.push(
+                    am5percent.PieSeries.new(root, {
+                        valueField: "value",
+                        categoryField: "category",
+                        endAngle: 270
+                    })
+                );
+
+                series.states.create("hidden", {
+                    endAngle: -90
+                });
+                var a3 = @Html.Raw(Json.Serialize(ViewBag.b3));
+                const formattedData3 = a3.map(obj => {
+                    const category = Object.keys(obj)[0]; // Extract the department name
+                    const value = obj[category]; // Extract the corresponding numeric value
+
+                    return {
+                        category: category,
+                        value: value
+                    };
+                });
+                // Set data
+                // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+
+                series.data.setAll(formattedData3);
+
+                series.appear(1000, 100);
+
+            }); // end am5.ready()
+        </script>
+    </div>
+    <br />
+    <h4>
+        Submission Chart &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last 30 days activity
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;Last 24 hours chart activity
+    </h4>
+    <div class="chart-row1">
+        <div class="chart-container" id="chartdiv6"></div>
+            <script>
+            am5.ready(function () {
+                var root = am5.Root.new("chartdiv6");
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+                // Create chart
+                var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                    panX: true,
+                    panY: true,
+                    wheelX: "panX",
+                    wheelY: "zoomX",
+                    pinchZoomX: true
+                }));
+                // Add more configurations as needed for your chart
+
+                // Retrieve data from ViewBag.c
+                var dataFromViewBag = @Html.Raw(Json.Serialize(ViewBag.c));
+
+                // Create axes
+                var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+                    maxDeviation: 0.3,
+                    baseInterval: {
+                        timeUnit: "day",
+                        count: 1
+                    },
+                    renderer: am5xy.AxisRendererX.new(root, { minorGridEnabled: true }),
+                    tooltip: am5.Tooltip.new(root, {})
+                }));
+
+                var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                    maxDeviation: 0.3,
+                    renderer: am5xy.AxisRendererY.new(root, {})
+                }));
+
+                // Create series
+                var series = chart.series.push(am5xy.LineSeries.new(root, {
+                    name: "Series 1",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "value1",
+                    valueXField: "date",
+                    tooltip: am5.Tooltip.new(root, {
+                        labelText: "{valueX}: {valueY}\n{previousDate}: {value2}"
+                    })
+                }));
+                series.strokes.template.setAll({
+                    strokeWidth: 2
+                });
+
+                var series2 = chart.series.push(am5xy.LineSeries.new(root, {
+                    name: "Series 2",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "value2",
+                    valueXField: "date"
+                }));
+                series2.strokes.template.setAll({
+                    strokeDasharray: [2, 2],
+                    strokeWidth: 2
+                });
+
+                // Set date fields
+                root.dateFormatter.setAll({
+                    dateFormat: "yyyy-MM-dd",
+                    dateFields: ["valueX"]
+                });
+
+                // Format the data for the chart series
+                var dataFromViewBag = @Html.Raw(Json.Serialize(ViewBag.c));
+                console.log(@Html.Raw(Json.Serialize(ViewBag.c)))
+                var formattedData4 = dataFromViewBag.map(function (item) {
+                    var date = Object.keys(item)[0]; // Extract the date
+                    var value = item[date]; // Extract the corresponding count
+
+                    return {
+                        date: new Date(date).getTime(),  // Convert date string to Date object
+                        value1: value, // Assuming this value corresponds to Series 1
+                        value2: 0 // You may adjust this if needed for Series 2
+                    };
+                });
+
+                // Set the data for the series
+                series.data.setAll(formattedData4);
+                series2.data.setAll(formattedData4);
+
+                // Make stuff animate on load
+                series.appear(1000);
+                series2.appear(1000);
+                chart.appear(1000, 100);
+
+            });
+        </script>
+        <div class="chart-container" id="chartdiv7"></div>
+        <script>
+            am5.ready(function () {
+
+                // Create root element
+                // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                var root = am5.Root.new("chartdiv7");
+
+
+                // Set themes
+                // https://www.amcharts.com/docs/v5/concepts/themes/
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+
+                // Create chart
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/
+                var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                    panX: true,
+                    panY: true,
+                    wheelX: "panX",
+                    wheelY: "zoomX",
+                    pinchZoomX: true
+                }));
+
+                chart.get("colors").set("step", 3);
+
+
+                // Add cursor
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+                var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+                cursor.lineY.set("visible", false);
+
+
+                // Create axes
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+                var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+                    maxDeviation: 0.3,
+                    baseInterval: {
+                        timeUnit: "day",
+                        count: 1
+                    },
+                    renderer: am5xy.AxisRendererX.new(root, { minorGridEnabled: true }),
+                    tooltip: am5.Tooltip.new(root, {})
+                }));
+
+                var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                    maxDeviation: 0.3,
+                    renderer: am5xy.AxisRendererY.new(root, {})
+                }));
+
+
+                // Add series
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+                var series = chart.series.push(am5xy.LineSeries.new(root, {
+                    name: "Series 1",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "value1",
+                    valueXField: "date",
+                    tooltip: am5.Tooltip.new(root, {
+                        labelText: "{valueX}: {valueY}\n{previousDate}: {value2}"
+                    })
+                }));
+
+                series.strokes.template.setAll({
+                    strokeWidth: 2
+                });
+
+                series.get("tooltip").get("background").set("fillOpacity", 0.5);
+
+                var series2 = chart.series.push(am5xy.LineSeries.new(root, {
+                    name: "Series 2",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "value2",
+                    valueXField: "date"
+                }));
+                series2.strokes.template.setAll({
+                    strokeDasharray: [2, 2],
+                    strokeWidth: 2
+                });
+
+                // Set date fields
+                // https://www.amcharts.com/docs/v5/concepts/data/#Parsing_dates
+                root.dateFormatter.setAll({
+                    dateFormat: "yyyy-MM-dd",
+                    dateFields: ["valueX"]
+                });
+
+                var v = @Html.Raw(Json.Serialize(ViewBag.b4));
+                console.log(@Html.Raw(Json.Serialize(ViewBag.b4)))
+                var formatted = v.map(function (item) {
+                    var date = Object.keys(item)[0]; // Extract the date
+                    var value = item[date]; // Extract the corresponding count
+
+                    return {
+                        date: new Date(date).getTime(),  // Convert date string to Date object
+                        value1: value, // Assuming this value corresponds to Series 1
+                        value2: 0 // You may adjust this if needed for Series 2
+                    };
+                });
+
+                // Set the data for the series
+                series.data.setAll(formatted);
+                series2.data.setAll(formatted);
+
+
+                // Make stuff animate on load
+                // https://www.amcharts.com/docs/v5/concepts/animations/
+                series.appear(1000);
+                series2.appear(1000);
+                chart.appear(1000, 100);
+
+            }); // end am5.ready()
+        </script>
+        <div class="chart-container" id="chartdiv8"></div>
+        <script>
+            am5.ready(function () {
+
+                // Create root element
+                // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                var root = am5.Root.new("chartdiv8");
+
+
+                // Set themes
+                // https://www.amcharts.com/docs/v5/concepts/themes/
+                root.setThemes([
+                    am5themes_Animated.new(root)
+                ]);
+
+
+                // Create chart
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/
+                var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                    panX: true,
+                    panY: true,
+                    wheelX: "panX",
+                    wheelY: "zoomX",
+                    pinchZoomX: true
+                }));
+
+                chart.get("colors").set("step", 3);
+
+
+                // Add cursor
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+                var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+                cursor.lineY.set("visible", false);
+
+
+                // Create axes
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+                var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+                    maxDeviation: 0.3,
+                    baseInterval: {
+                        timeUnit: "day",
+                        count: 1
+                    },
+                    renderer: am5xy.AxisRendererX.new(root, { minorGridEnabled: true }),
+                    tooltip: am5.Tooltip.new(root, {})
+                }));
+
+                var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                    maxDeviation: 0.3,
+                    renderer: am5xy.AxisRendererY.new(root, {})
+                }));
+
+
+                // Add series
+                // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+                var series = chart.series.push(am5xy.LineSeries.new(root, {
+                    name: "Series 1",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "value1",
+                    valueXField: "date",
+                    tooltip: am5.Tooltip.new(root, {
+                        labelText: "{valueX}: {valueY}\n{previousDate}: {value2}"
+                    })
+                }));
+
+                series.strokes.template.setAll({
+                    strokeWidth: 2
+                });
+
+                series.get("tooltip").get("background").set("fillOpacity", 0.5);
+
+                var series2 = chart.series.push(am5xy.LineSeries.new(root, {
+                    name: "Series 2",
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField: "value2",
+                    valueXField: "date"
+                }));
+                series2.strokes.template.setAll({
+                    strokeDasharray: [2, 2],
+                    strokeWidth: 2
+                });
+
+                // Set date fields
+                // https://www.amcharts.com/docs/v5/concepts/data/#Parsing_dates
+                root.dateFormatter.setAll({
+                    dateFormat: "yyyy-MM-dd",
+                    dateFields: ["valueX"]
+                });
+
+
+                var dataVi = @Html.Raw(Json.Serialize(ViewBag.e));
+                console.log(@Html.Raw(Json.Serialize(ViewBag.e)))
+                var formattedData7 = dataVi.map(function (item) {
+                    var date = Object.keys(item)[0]; // Extract the date
+                    var value = item[date]; // Extract the corresponding count
+
+                    return {
+                        date: new Date(date).getTime(),  // Convert date string to Date object
+                        value1: value, // Assuming this value corresponds to Series 1
+                        value2: 0 // You may adjust this if needed for Series 2
+                    };
+                });
+
+                // Set the data for the series
+                series.data.setAll(formattedData7);
+                series2.data.setAll(formattedData7);
+
+
+                // Make stuff animate on load
+                // https://www.amcharts.com/docs/v5/concepts/animations/
+                series.appear(1000);
+                series2.appear(1000);
+                chart.appear(1000, 100);
+
+            }); // end am5.ready()
+        </script>
+        <div class="status-section">
+            <!-- Students Status Card -->
+            <div class="status-card">
+                <h2>Students Status</h2>
+                <ul class="status-details">
+                    <li class="status-item">
+                        @foreach (var statusCount in ViewBag.i)
+                        {
+                            <p>@statusCount.Key: @statusCount.Value</p>
+                        }
+
+                    </li>
+                </ul>
+            </div>
+            <!-- Rest of your HTML content -->
+        </div>
+
+    </div>
+    <br />
+    <div class="interests-section">
+        <!-- Top 5 Interests -->
+        <div class="interests">
+            <h2>Top Interests</h2>
+            <ul>
+                @foreach (var interest in ViewBag.info)
+                {
+                    <li><button class="interest-button">@interest</button></li>
+                }
+            </ul>
+        </div>
+        <!-- bottom 5 interests -->
+        <div class="interests">
+            <h2>bottom interests</h2>
+            <ul>
+                @foreach (var interest in ViewBag.infor)
+                {
+                    <li><button class="interest-button">@interest</button></li>
+                } 
+            </ul>
+        </div>
+        <div class="status-section1">
+            <!-- Students Status Card -->
+            <div class="status-card1">
+                <h2>Distinict Interests</h2>
+                <ul class="status-details">
+                    <li class="status-item">
+                        <span>@ViewBag.inform</span>
+                    </li>
+            </div>
+            <!-- Rest of your HTML content -->
+        </div>
+    </div>
+</body>
+</html>

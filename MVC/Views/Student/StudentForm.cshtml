@@ -1,0 +1,240 @@
+﻿@model MVC.Models.Student
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Interests System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; /* Light grey background for the body */
+        }
+
+        /* Heading Bar */
+        .heading-bar {
+            background-color: #3498db; /* Dark grey color for heading bar */
+            text-align: center;
+            padding: 33px 0;
+        }
+
+            .heading-bar h1 {
+                color: white; /* White text color for heading */
+                margin: 0; /* Remove default margin */
+            }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #3498db; /* Dark grey color for top bar */
+            text-align: center;
+            padding: 10px 0;
+        }
+
+            .top-bar a {
+                display: inline-block;
+                padding: 10px 20px;
+                text-decoration: none;
+                color: white; /* White text color for top bar buttons */
+            }
+
+        /* Content Area */
+        .content {
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        #page-navigator {
+            margin-top: 20px;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            text-align: left;
+            background-color: #f4f4f4; /* Light grey background for the form */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adding a subtle shadow */
+            margin: auto; /* Center the form */
+            max-width: 800px; /* Limit form width */
+        }
+
+        .form-row {
+            width: calc(33.33% - 10px); /* Adjust width for three columns with space between */
+            margin-bottom: 15px;
+        }
+
+            .form-row label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .form-row input,
+            .form-row select {
+                width: 100%; /* Occupy full width of their container */
+                padding: 5px;
+                /* ... (existing styles) ... */
+                background-color: #f0f0f0; /* Light grey background for form fields */
+                color: #333; /* Text color for form fields */
+            }
+
+        form {
+            /* ... (existing styles) ... */
+            background-color: #3498db; /* Dark grey color, matching heading */
+            color: white; /* White text color */
+        }
+
+        .form-row input,
+        .form-row select {
+            /* ... (existing styles) ... */
+            background-color: #f0f0f0; /* Light grey background for form fields */
+            color: #333; /* Text color for form fields */
+        }
+
+        .buttons-container {
+            text-align: center;
+            margin-top: 10px; /* Adjust the margin-top */
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+        }
+
+            /* Styling for the "Save Student" button */
+            .buttons-container input[type="submit"] {
+                background-color: white;
+                color: black; /* Blue text color */
+                border: 1px solid #3498db; /* Blue border */
+                border-radius: 4px;
+                cursor: pointer;
+                padding: 8px 15px;
+                margin: 0 5px;
+            }
+
+                /* Hover effect for the "Save Student" button */
+                .buttons-container input[type="submit"]:hover {
+                    background-color: #3498db;
+                    color: white;
+                }
+
+           
+    </style>
+</head>
+<body>
+    <!-- Heading Bar -->
+    <div class="heading-bar">
+        <h1>Student Interests System</h1>
+    </div>
+    <div id="page-navigator">
+        <a href="/Student/StudentDashboard" id="Dashboard">Dashboard</a>
+        <a href="/Student/Index" id="StudentList">Student List</a>
+    </div>
+    <!-- Content Area -->
+    <div class="content">
+        <form asp-action="StudentForm" method="post" asp-controller="Student">
+            <div class="form-row">
+                <label asp-for="Name">Name:</label>
+                <input asp-for="Name" type="text" id="name" name="name" required>
+                <span class="validation-message">Name is required.</span>
+            </div>
+            <div class="form-row">
+                <label asp-for="RollNumber">Roll Number:</label>
+                <input asp-for="RollNumber" type="text" id="rollnumber" name="rollnumber" required>
+                <span class="validation-message">Roll Number is required.</span>
+            </div>
+            <div class="form-row">
+                <label asp-for="DOB">DOB:</label>
+                <input asp-for="DOB" type="text" id="id" name="DOB" required>
+                <span class="validation-message">DOB is required.</span>
+            </div>
+            <div class="form-row">
+                <label asp-for="Email">Email:</label>
+                <input asp-for="Email" type="email" id="email" name="email" required>
+                <span class="validation-message">Email is required.</span>
+            </div>
+            <div class="form-row">
+                <label asp-for="Gender">Gender:</label>
+                <select asp-for="Gender" class="form-control" id="gender" name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <span class="validation-message">gender is required.</span>
+                </select>
+            </div>
+            <div class="form-row">
+                <label asp-for="City">City:</label>
+                <input asp-for="City" type="text" id="city" name="city" required>
+                <span class="validation-message">City is required.</span>
+            </div>
+            <div class="form-row">
+                <label asp-for="Interest">Interest:</label>
+                <select asp-for="Interest" class="form-control" id="Interest" name="Interest" required>
+                    <option value="Swimming">Swimming</option>
+                    <option value="Reading">Reading</option>
+                    <option value="Scrolling">Scrolling</option>
+                    <option value="eating">eating</option>
+                    <option value="overthinking">overthinking</option>
+                    <option value="jumping">jumping</option>
+                    <option value="Sleeping">Sleeping</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Learning">Learning</option>
+                    <option value="dancing">dancing</option>
+                    <option value="Other">Other</option>
+                    <span class="validation-message">Interest is required.</span>
+                </select>
+            </div>
+            <div class="form-row">
+                <label asp-for="Department">Department:</label>
+                <select asp-for="Department" class="form-control" id="Department" name="Department" required>
+                    <option value="Dept of Information Technology">Dept of Information Technology</option>
+                    <option value="Dept of Computer Science">Dept of Computer Science</option>
+                    <option value="Dept of Software Engineering">Dept of Software Engineering</option>
+                    <span class="validation-message">Department is required.</span>
+                </select>
+            </div>
+            <div class="form-row">
+                <label asp-for="DegreeTitle">Degree Title:</label>
+                <select asp-for="DegreeTitle" class="form-control" id="DegreeTitle" name="DegreeTitle" required>
+                    <option value="Associate degree">Associate degree</option>
+                    <option value="Bachelor degree">Bachelor degree</option>
+                    <option value="Master degree">Master degree</option>
+                    <option value="Post Graduate Diploma">Post Graduate Diploma</option>
+                    <option value="Doctorate">Doctorate</option>
+                    <option value="Post Doctorate">Post Doctorate</option>
+                    <span class="validation-message">DegreeTitle is required.</span>
+                </select>
+            </div>
+            <div class="form-row">
+                <label asp-for="Subject">Subject:</label>
+                <input asp-for="Subject" type="text" id="subject" name="subject" required>
+                <span class="validation-message">Subject is required.</span>
+            </div>
+            <div class="form-row">
+                <label asp-for="StartDate">Start Date:</label>
+                <input asp-for="StartDate" type="text" id="startdate" name="startdate" placeholder="dd/mm/yyyy" required>
+                <span class="validation-message">StartDate is required.</span>
+            </div>
+            <div class="form-row">
+                <label asp-for="EndDate">End Date:</label>
+                <input asp-for="EndDate" type="text" id="enddate" name="enddate" placeholder="dd/mm/yyyy" required>
+                <span class="validation-message">EndDate is required.</span>
+            </div>
+            <div class="buttons-container">
+                <input type="submit" value="Create">
+                <button type="button" onclick="cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        function cancel() {
+            window.location.href = '/Student/Index'; // Redirect to the current path
+        }
+
+        function validateForm() {
+            // Perform form validation if needed
+            return true; // Return true to submit the form
+        }
+    </script>
+        
+</body>
+</html>
